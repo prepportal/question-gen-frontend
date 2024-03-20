@@ -21,14 +21,14 @@ export async function POST(req: Request, res: Response) {
     const { count, context, type } = quizFormSchema.parse(body);
     let questions: any;
     if (type === "fib") {
-      const response = await axios.post(`http://192.168.1.212:5000/generate`, {
+      const response = await axios.post(`${process.env.BACKEND_URL as string}/generate`, {
             count: count,
             text: context,
             type: type,
         });
         questions = response.data;
     } else if (type === "mcq") {
-        const response = await axios.post(`http://192.168.1.212:5000/generate`, {
+        const response = await axios.post(`${process.env.BACKEND_URL as string}/generate`, {
             count: count,
             text: context,
             type: type,
