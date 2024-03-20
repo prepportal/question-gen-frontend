@@ -12,8 +12,17 @@ const BuildWith = () => {
             <Image
               alt="planetscale"
               src="/planetscale.png"
+              className="hidden dark:block"
               width={130}
               height={130}
+              style={{ filter: "invert(1)" }}
+            />
+            <Image
+              alt="planetscale"
+              src="/planetscale.png"
+              width={130}
+              height={130}
+              className="block dark:hidden"
             />
           </div>
           <div className="flex items-center gap-2">
