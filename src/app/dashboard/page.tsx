@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 import QuizMeCard from '@/components/dashboard/QuizMeCard'
+import FillCard from '@/components/dashboard/FillCard'
+import TrueorFalseCard from '@/components/dashboard/TrueorFalseCard'
 import HistoryCard from '@/components/dashboard/HistoryCard'
 import HotTopicsCard from '@/components/dashboard/HotTopicsCard'
 import RecentActivityCard from '@/components/dashboard/RecentActivities'
@@ -30,6 +32,8 @@ const DashboardPage = async(props: Props) => {
 
         <div className=' grid md:grid-cols-2 gap-4 mt-4'>
             <QuizMeCard />
+            <FillCard />
+            <TrueorFalseCard />
             <HistoryCard />
         </div>
 
