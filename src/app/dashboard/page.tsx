@@ -30,16 +30,19 @@ const DashboardPage = async (props: Props) => {
 
       <div className=" grid md:grid-cols-2 gap-4 mt-4">
         <QuizMeCard
+          type="mcq"
           heading="Quiz Me!"
           description="Challenge yourself to a quiz with a topic of your choice."
           icon={<BrainCircuit size={28} strokeWidth={2.5} />}
         />
         <QuizMeCard
+          type="fib"
           heading="Fill me!"
           description="Put your skills to the test by filling in the blanks with your chosen topics!"
           icon={<NotepadTextDashed size={28} strokeWidth={2.5} />}
         />
         <QuizMeCard
+          type="truefalse"
           heading="Test Your Insight!"
           description="Engage in a quiz featuring true or false statements, tailored to your preferred topics!"
           icon={<ListTodo size={28} strokeWidth={2.5} />}

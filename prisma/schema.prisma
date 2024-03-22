@@ -55,6 +55,7 @@ model User {
 enum GameType {
   mcq
   fib
+  truefalse
 }
 
                                               //watch at 1:44 to understand the 1 to many relationship in prisma
@@ -65,7 +66,8 @@ model Game {
   userId      String
   questions   Question[]
   timeStarted DateTime
-  topic       String
+  topic       String?
+  context     String     @db.Text
   timeEnded   DateTime?
   gameType    GameType
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)

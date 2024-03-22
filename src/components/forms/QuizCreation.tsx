@@ -25,9 +25,7 @@ import {zodResolver} from '@hookform/resolvers/zod'
 
 import {useMutation} from '@tanstack/react-query'  
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
-
-import { BookOpen, CopyCheck } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import LoadingQuestions from '../LoadingQuestions';
 
@@ -39,14 +37,17 @@ type Input = z.infer<typeof quizFormSchema>
 const QuizCreation = (props: Props) => {
 
     const router = useRouter();
+    const searchParams = useSearchParams() 
+    const q_type = searchParams.get('type') as "mcq" | "fib" | "truefalse";
 
     const [showLoader , setShowLoader] = React.useState(false);
     const [finishedLoading, setFinishedLoading] = React.useState(false);
 
 
     const {mutate: getQuestions , isLoading}  = useMutation({                                             //2:18
-        mutationFn: async ({context, count, type}: Input) => {
+        mutationFn: async ({topic, context, count, type}: Input) => {
             const response = await axios.post('/api/game', {
+                topic,
                 context,
                 count,
                 type
@@ -60,6 +61,7 @@ const QuizCreation = (props: Props) => {
     const form = useForm<Input>({
         resolver: zodResolver(quizFormSchema),
         defaultValues: {
+            topic: '',
             context: '',
             count: 3,
             type: "mcq",
@@ -72,16 +74,17 @@ const QuizCreation = (props: Props) => {
         setShowLoader(true);
         
         getQuestions({
+            topic: input.topic,
             context: input.context,
             count: input.count,
-            type: input.type
+            type: q_type
         },{
             onSuccess: ({gameId}) => {
 
                 setFinishedLoading(true);          //ending the loading screen and then now I am moving this whole function inside timeout so that the loading screen stays for 1 sec and then the questions appear
                 setTimeout(() => {
-                if(form.getValues("type") == "fib") {
-                    router.push(`/play/open-ended/${gameId}`)
+                if(q_type == "fib") {
+                    router.push(`/play/fib/${gameId}`)
                 }else{
                     router.push(`/play/mcq/${gameId}`)
                 }
@@ -108,15 +111,30 @@ const QuizCreation = (props: Props) => {
         <Card className=' shadow-lg w-[370px] lg:w-[600px]'>
 
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">Quiz Creation</CardTitle>
-                <CardDescription>Choose a quiz type and give context</CardDescription>
+                <CardTitle className="text-2xl font-bold">{q_type == "mcq" ? "Multiple Choice" : "Fill in the Blanks" } Creation</CardTitle>
+                <CardDescription>Create Quiz from the given Context</CardDescription>
             </CardHeader>
 
             <CardContent>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
+                    <FormField
+                        control={form.control}
+                        name="topic"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Topic (Optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter a topic for the quiz..." {...field}/>
+                            </FormControl>
+                            <FormDescription>
+                                Please provide a topic for the quiz .
+                            </FormDescription>
+                            <FormMessage />    {/*ye show krega wo formSchema wala error message ki topic should be atleast 4 characters long */}
+                            </FormItem>
+                        )}
+                        />
                         <FormField
                         control={form.control}
                         name="context"
@@ -162,34 +180,7 @@ const QuizCreation = (props: Props) => {
                         />
 
 
-                        <div className=' flex justify-between'>
-
-                            <Button className=' w-1/2 rounded-none rounded-l-lg p-1'
-                            variant={
-                                form.getValues("type") === "mcq" ? "default" : "secondary"        //1:37
-                              }
-                              onClick={() => {
-                                form.setValue("type", "mcq");
-                              }}
-                              type="button"
-                            >
-                                <CopyCheck className=' w-4 h-4 mr-2'/><span className=' text-xs md:text-sm'>MCQ</span> 
-                            </Button>
-
-                            <Separator orientation='vertical'/>
-
-                            <Button className=' w-1/2 rounded-none rounded-r-lg p-1'
-                            variant={
-                                form.getValues("type") === "fib" ? "default" : "secondary"
-                              }
-                              onClick={() => {
-                                form.setValue("type", "fib");
-                              }}
-                              type="button"
-                            >
-                                <BookOpen className=' w-4 h-4 mr-2'/> <span className=' text-xs md:text-sm'>FIB</span>
-                            </Button>
-                        </div>
+                        <Separator />
 
 
                         <Button disabled={isLoading} type="submit">Submit</Button>

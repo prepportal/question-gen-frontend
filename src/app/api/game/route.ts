@@ -21,18 +21,20 @@ export async function POST(req:Request, res:Response)
           }
 
         const body = await req.json();
-        const { count, context, type } = quizFormSchema.parse(body);
+        const { topic, count, context, type } = quizFormSchema.parse(body);
 
         const game = await prisma.game.create({
             data: {
                 gameType: type,
-                topic: context.substring(0, 10),
+                topic: topic,
+                context: context,
                 timeStarted: new Date(),
                 userId: session.user.id,
             }
         })
 
         const {data} = await axios.post(`${process.env.API_URL as string}/api/questions`, {         //data here is an object which has an array consisting of many quesiton objects , output was seen in postman
+            topic: topic,
             count: count,
             context: context,
             type: type,
