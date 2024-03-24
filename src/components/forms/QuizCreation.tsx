@@ -34,6 +34,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getWikiSummary } from "@/lib/wiki";
 
 import LoadingQuestions from "../LoadingQuestions";
+import { Bot, Zap } from "lucide-react";
 
 type Props = {};
 
@@ -54,11 +55,12 @@ const QuizCreation = (props: Props) => {
 
   const { mutate: getQuestions, isLoading } = useMutation({
     //2:18
-    mutationFn: async ({ context, count, type }: Input) => {
+    mutationFn: async ({ context, count, type, model }: Input) => {
       const response = await axios.post("/api/game", {
         context,
         count,
         type,
+        model,
       });
 
       return response.data;
@@ -71,16 +73,17 @@ const QuizCreation = (props: Props) => {
       context: "",
       count: 3,
       type: "mcq",
+      model: "prepportal",
     },
   });
   const { setValue } = form;
 
-    useQuery(['wikiSummary', topic], () => getWikiSummary(topic), {
-        enabled: !!topic,
-        onSuccess: (summary) => {
-            setValue('context', summary);
-        }
-    });
+  useQuery(["wikiSummary", topic], () => getWikiSummary(topic), {
+    enabled: !!topic,
+    onSuccess: (summary) => {
+      setValue("context", summary);
+    },
+  });
 
   function onSubmit(input: Input) {
     // alert(JSON.stringify(input ,null ,2))           //isse mast json format me print ho kr aa rha object with all inputs in the middle of the screen
@@ -92,6 +95,7 @@ const QuizCreation = (props: Props) => {
         context: input.context,
         count: input.count,
         type: q_type,
+        model: input.model,
       },
       {
         onSuccess: ({ gameId }) => {
@@ -188,6 +192,33 @@ const QuizCreation = (props: Props) => {
                   </FormItem>
                 )}
               />
+              <div className="flex justify-between">
+                <Button
+                  variant={
+                    form.getValues("model") === "prepportal"
+                      ? "default"
+                      : "secondary"
+                  }
+                  className="w-1/2 rounded-none rounded-l-lg"
+                  onClick={() => {
+                    form.setValue("model", "prepportal");
+                  }}
+                  type="button"
+                >
+                  <Zap className="w-4 h-4 mr-2" /> Prepportal
+                </Button>
+                <Separator orientation="vertical" />
+                <Button
+                  variant={
+                    form.getValues("model") === "gpt" ? "default" : "secondary"
+                  }
+                  className="w-1/2 rounded-none rounded-r-lg"
+                  onClick={() => form.setValue("model", "gpt")}
+                  type="button"
+                >
+                  <Bot className="w-4 h-4 mr-2" /> ChatGPT
+                </Button>
+              </div>
 
               <Separator />
 

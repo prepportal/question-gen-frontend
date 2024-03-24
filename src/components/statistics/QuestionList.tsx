@@ -26,7 +26,7 @@ const QuestionsList = ({ questions }: Props) => {
           <TableHead>Your Answer</TableHead>
 
           {questions[0].questionType === "fib" && (
-            <TableHead className="w-[10px] text-right">Accuracy</TableHead>        //displaying one extra column 'accuracy' if the question type is fib
+            <TableHead className="w-[10px] text-right">Accuracy</TableHead> //displaying one extra column 'accuracy' if the question type is fib
           )}
         </TableRow>
       </TableHeader>
@@ -59,11 +59,11 @@ const QuestionsList = ({ questions }: Props) => {
                     </TableCell>
                   )}
 
-                  {percentageCorrect && (
+                  {percentageCorrect !== null ? (
                     <TableCell className="text-right">
                       {percentageCorrect}
                     </TableCell>
-                  )}
+                  ) : null}
                 </TableRow>
               );
             }
