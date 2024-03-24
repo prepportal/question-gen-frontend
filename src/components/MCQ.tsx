@@ -137,11 +137,14 @@ const MCQ = ({game}: Props) => {
 
 
       if (hasEnded) {
+        axios.post("/api/endgame", {
+          gameId: game.id,
+          timeEnded: now,
+        });
         return (
           <div className="absolute flex flex-col justify-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
             <div className="px-4 py-2 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">
-              You Completed in{""}
-              {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
+              You Completed in {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
             </div>
             <Link
               href={`/statistics/${game.id}`}
