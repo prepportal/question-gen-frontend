@@ -45,9 +45,8 @@ const QuizCreation = (props: Props) => {
 
 
     const {mutate: getQuestions , isLoading}  = useMutation({                                             //2:18
-        mutationFn: async ({topic, context, count, type}: Input) => {
+        mutationFn: async ({context, count, type}: Input) => {
             const response = await axios.post('/api/game', {
-                topic,
                 context,
                 count,
                 type
@@ -61,7 +60,6 @@ const QuizCreation = (props: Props) => {
     const form = useForm<Input>({
         resolver: zodResolver(quizFormSchema),
         defaultValues: {
-            topic: '',
             context: '',
             count: 3,
             type: "mcq",
@@ -74,7 +72,6 @@ const QuizCreation = (props: Props) => {
         setShowLoader(true);
         
         getQuestions({
-            topic: input.topic,
             context: input.context,
             count: input.count,
             type: q_type
@@ -85,8 +82,12 @@ const QuizCreation = (props: Props) => {
                 setTimeout(() => {
                 if(q_type == "fib") {
                     router.push(`/play/fib/${gameId}`)
-                }else{
+                }
+                else if (q_type == "mcq"){
                     router.push(`/play/mcq/${gameId}`)
+                }
+                else if (q_type == "truefalse"){
+                    router.push(`/play/truefalse/${gameId}`)
                 }
             }, 1000);
 
@@ -111,7 +112,7 @@ const QuizCreation = (props: Props) => {
         <Card className=' shadow-lg w-[370px] lg:w-[600px]'>
 
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">{q_type == "mcq" ? "Multiple Choice" : "Fill in the Blanks" } Creation</CardTitle>
+                <CardTitle className="text-2xl font-bold">{q_type == "mcq" ? "Multiple Choice" : q_type == "truefalse" ? "True/False" : "Fill in the Blanks"} Creation</CardTitle>
                 <CardDescription>Create Quiz from the given Context</CardDescription>
             </CardHeader>
 
@@ -119,22 +120,6 @@ const QuizCreation = (props: Props) => {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormField
-                        control={form.control}
-                        name="topic"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Topic (Optional)</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Enter a topic for the quiz..." {...field}/>
-                            </FormControl>
-                            <FormDescription>
-                                Please provide a topic for the quiz .
-                            </FormDescription>
-                            <FormMessage />    {/*ye show krega wo formSchema wala error message ki topic should be atleast 4 characters long */}
-                            </FormItem>
-                        )}
-                        />
                         <FormField
                         control={form.control}
                         name="context"

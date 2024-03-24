@@ -48,7 +48,18 @@ const StatisticsPage = async({params: {gameId}}: Props) => {
         , 0);
         accuracy = (totalCorrect / game.questions.length) * 100;
 
-      }else if(game.gameType === 'fib')
+      }else if(game.gameType === 'truefalse')
+      {
+        let totalCorrect = game.questions.reduce((acc, question) => {
+          if (question.answer === question.userAnswer) {
+            return acc + 1;
+          }
+          return acc;
+        }
+        , 0);
+        accuracy = (totalCorrect / game.questions.length) * 100;
+
+      } else if(game.gameType === 'fib')
       {
         let totalPercentage = game.questions.reduce((acc, question) => {
           return acc + (question.percentageCorrect ?? 0);

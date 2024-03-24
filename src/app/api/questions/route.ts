@@ -1,4 +1,3 @@
-
 import { strict_output } from "@/lib/gpt";
 import { getAuthSession } from "@/lib/next-auth";
 import { quizFormSchema } from "@/schemas/form/quiz";
@@ -20,26 +19,46 @@ export async function POST(req: Request, res: Response) {
     const body = await req.json();
     const { count, context, type } = quizFormSchema.parse(body);
     let questions: any;
+    let topic: any;
     if (type === "fib") {
-      const response = await axios.post(`${process.env.BACKEND_URL as string}/generate`, {
-            count: count,
-            text: context,
-            type: type,
-        });
-        questions = response.data;
+      const response = await axios.post(
+        `${process.env.BACKEND_URL as string}/generate`,
+        {
+          count: count,
+          text: context,
+          type: type,
+        }
+      );
+      questions = response.data.questions;
+      topic = response.data.topic;
     } else if (type === "mcq") {
-        const response = await axios.post(`${process.env.BACKEND_URL as string}/generate`, {
-            count: count,
-            text: context,
-            type: type,
-        });
+      const response = await axios.post(
+        `${process.env.BACKEND_URL as string}/generate`,
+        {
+          count: count,
+          text: context,
+          type: type,
+        }
+      );
 
-        questions = response.data;
-            
+      questions = response.data.questions;
+      topic = response.data.topic;
+    } else if (type === "truefalse") {
+      const response = await axios.post(
+        `${process.env.BACKEND_URL as string}/generate`,
+        {
+          count: count,
+          text: context,
+          type: type,
+        }
+      );
+      questions = response.data.questions;
+      topic = response.data.topic;
     }
     return NextResponse.json(
       {
         questions: questions,
+        topic: topic,
       },
       {
         status: 200,
@@ -54,7 +73,7 @@ export async function POST(req: Request, res: Response) {
         }
       );
     } else {
-      console.error("elle gpt error", error);
+      console.error(error);
       return NextResponse.json(
         { error: "An unexpected error occurred." },
         {

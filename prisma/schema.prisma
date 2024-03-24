@@ -77,7 +77,7 @@ model Game {
 
 model Question {
   id                String   @id @default(cuid())
-  question          String
+  question          String   @db.Text
   answer            String
   gameId            String
   options           Json? // for mcq questions

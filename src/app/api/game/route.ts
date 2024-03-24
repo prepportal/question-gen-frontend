@@ -21,12 +21,11 @@ export async function POST(req:Request, res:Response)
           }
 
         const body = await req.json();
-        const { topic, count, context, type } = quizFormSchema.parse(body);
+        const { count, context, type } = quizFormSchema.parse(body);
 
         const game = await prisma.game.create({
             data: {
                 gameType: type,
-                topic: topic,
                 context: context,
                 timeStarted: new Date(),
                 userId: session.user.id,
@@ -34,7 +33,6 @@ export async function POST(req:Request, res:Response)
         })
 
         const {data} = await axios.post(`${process.env.API_URL as string}/api/questions`, {         //data here is an object which has an array consisting of many quesiton objects , output was seen in postman
-            topic: topic,
             count: count,
             context: context,
             type: type,
@@ -70,6 +68,42 @@ export async function POST(req:Request, res:Response)
 
                 await prisma.question.createMany({
                     data: manyData,
+                })
+            }
+            else if(type == 'truefalse')
+            {
+                type trueFalseQuestion = {
+                    question: string;
+                    answer: string;
+                    option1: string;
+                  };            
+
+                const manyData = data.questions.map((question:trueFalseQuestion) => {            //manyData here is the array of many questions , and "questions" is the name of the array which is inside the data object containing many question objects
+
+                    const options = [question.answer, question.option1].sort(() => Math.random() - 0.5);
+
+                    return {
+                        question: question.question,
+                        answer: question.answer,
+                        // option1: question.option1,
+                        // option2: question.option2,
+                        // option3: question.option3,     pehle aise krne wale the pr options ko random order me rkhna hain na
+                        options: JSON.stringify(options),
+                        gameId: game.id,
+                        questionType: "truefalse",
+                    }
+                })
+
+                await prisma.question.createMany({
+                    data: manyData,
+                })
+                await prisma.game.update({
+                    where: {
+                        id: game.id,
+                    },
+                    data: {
+                        "topic": data.topic,
+                    }
                 })
             }
 

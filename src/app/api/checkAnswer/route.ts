@@ -58,6 +58,25 @@ export async function POST(req: Request, res: Response) {
             );
 
         }
+        else if(quesiton.questionType ==='truefalse')
+        {
+            const isCorrect = quesiton.answer.toLowerCase().trim() === userAnswer.toLowerCase().trim();
+
+            await prisma.question.update({
+                where: {
+                    id: questionId,
+                },
+                data: {
+                    isCorrect: isCorrect,
+                }
+            });
+
+            return NextResponse.json(
+                {isCorrect},
+                { status: 200 }
+            );
+
+        }
         
         else if (quesiton.questionType === "fib") {
             let percentageSimilar = stringSimilarity.compareTwoStrings(
