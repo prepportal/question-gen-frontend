@@ -69,6 +69,14 @@ export async function POST(req:Request, res:Response)
                 await prisma.question.createMany({
                     data: manyData,
                 })
+                await prisma.game.update({
+                    where: {
+                        id: game.id,
+                    },
+                    data: {
+                        "topic": data.topic,
+                    }
+                })
             }
             else if(type == 'truefalse')
             {
@@ -127,8 +135,14 @@ export async function POST(req:Request, res:Response)
                     await prisma.question.createMany({
                         data: manyData,
                     })
-
-
+                    await prisma.game.update({
+                        where: {
+                            id: game.id,
+                        },
+                        data: {
+                            "topic": data.topic,
+                        }
+                    })
             }
 
             return NextResponse.json({ gameId: game.id }, { status: 200 });
