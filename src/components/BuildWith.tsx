@@ -10,19 +10,9 @@ const BuildWith = () => {
         <div className="grid grid-cols-8 mx-auto">
           <div className="flex gap-2">
             <Image
-              alt="planetscale"
-              src="/planetscale.png"
-              className="hidden dark:block"
-              width={130}
-              height={130}
-              style={{ filter: "invert(1)" }}
-            />
-            <Image
-              alt="planetscale"
-              src="/planetscale.png"
-              width={130}
-              height={130}
-              className="block dark:hidden"
+              alt="MySQL Azure"
+              src="/mysql.svg"
+              width={130} height={130}
             />
           </div>
           <div className="flex items-center gap-2">
