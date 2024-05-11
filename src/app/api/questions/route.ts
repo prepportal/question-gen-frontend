@@ -20,7 +20,7 @@ export async function POST(req: Request, res: Response) {
     const { count, context, type, model } = quizFormSchema.parse(body);
     let questions: any;
     let topic: any;
-    if (type === "fib" && model === "prepportal") {
+    if (type === "fib" && model === "MMQG-T") {
       const response = await axios.post(
         `${process.env.BACKEND_URL as string}/generate`,
         {
@@ -45,7 +45,7 @@ export async function POST(req: Request, res: Response) {
         }
       );
       topic = questions[0].topic;
-    } else if (type === "mcq" && model === "prepportal") {
+    } else if (type === "mcq" && model === "MMQG-T") {
       const response = await axios.post(
         `${process.env.BACKEND_URL as string}/generate`,
         {
@@ -73,7 +73,7 @@ export async function POST(req: Request, res: Response) {
         }
       );
       topic = questions[0].topic;
-    } else if (type === "truefalse" && model === "prepportal") {
+    } else if (type === "truefalse" && model === "MMQG-T") {
       const response = await axios.post(
         `${process.env.BACKEND_URL as string}/generate`,
         {

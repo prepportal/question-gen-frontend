@@ -73,7 +73,7 @@ const QuizCreation = (props: Props) => {
       context: "",
       count: 3,
       type: "mcq",
-      model: "prepportal",
+      model: "MMQG-T",
     },
   });
   const { setValue } = form;
@@ -195,17 +195,17 @@ const QuizCreation = (props: Props) => {
               <div className="flex justify-between">
                 <Button
                   variant={
-                    form.getValues("model") === "prepportal"
+                    form.getValues("model") === "MMQG-T"
                       ? "default"
                       : "secondary"
                   }
                   className="w-1/2 rounded-none rounded-l-lg"
                   onClick={() => {
-                    form.setValue("model", "prepportal");
+                    form.setValue("model", "MMQG-T");
                   }}
                   type="button"
                 >
-                  <Zap className="w-4 h-4 mr-2" /> Prepportal
+                  <Zap className="w-4 h-4 mr-2" /> MMQG-T
                 </Button>
                 <Separator orientation="vertical" />
                 <Button
